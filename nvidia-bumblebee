@@ -1,0 +1,132 @@
+#!/usr/bin/env python2
+
+import sys
+import os
+import gettext
+import subprocess
+import commands
+import threading
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk
+
+# i18n
+gettext.install("nvidia-bumblebee-applet", "/usr/share/locale")
+
+
+class Tray:
+    def __init__(self):
+
+        self.icon = Gtk.StatusIcon()
+        self.icon.set_title("nvidia-bumblebee")
+        self.icon.connect("popup-menu", self.on_popup_menu)
+        self.icon.connect("activate", self.on_activate)
+
+        self.display_icon()
+
+    def display_icon(self):
+        threading.Timer(2.0, self.display_icon).start()
+        status = commands.getoutput("optirun --status | grep -c off")
+        if (status == "0"):
+            text = commands.getoutput(
+                "optirun --status | grep -oE \"[0-9] applications.*\"")
+            self.icon.set_from_file(os.path.abspath('active.svg'))
+            self.icon.set_tooltip_text(_(text))
+        elif (status == "1"):
+            text = commands.getoutput(
+                "optirun --status | grep -oE \"Discrete.*\"")
+            self.icon.set_from_file(os.path.abspath('inactive.svg'))
+            self.icon.set_tooltip_text(_(text))
+        else:
+            self.icon.set_from_icon_name("dialog-error")
+            self.icon.set_tooltip_text(
+                _("Active graphics card: " + status))
+
+    def on_activate(self, icon, data=None):
+        self.run_nvidia_settings()
+
+    def run_nvidia_settings(self, arg=None):
+        subprocess.Popen(
+            ["optirun", "-b", "none", "nvidia-settings", "-c", ":8"])
+
+    def on_popup_menu(self, icon, button, time, data=None):
+        menu = Gtk.Menu()
+
+        def position_menu_cb(m, x, y=None, i=None):
+            try:
+                return Gtk.StatusIcon.position_menu(menu, x, y, icon)
+            except (AttributeError, TypeError):
+                return Gtk.StatusIcon.position_menu(menu, icon)
+
+        item = Gtk.MenuItem(label=_("NVIDIA Settings"))
+        item.connect("activate", self.run_nvidia_settings)
+        menu.append(item)
+
+        menu.show_all()
+
+        device = Gdk.Display.get_default().get_device_manager().get_client_pointer()
+        menu.popup_for_device(device, None, None,
+                              position_menu_cb, icon, button, time)
+
+    def terminate(self, window=None, data=None):
+        Gtk.main_quit()
+
+
+class Indicator:
+    def __init__(self):
+        # self.running = true
+        self.icon = AppIndicator.Indicator.new(
+            'nvidia-bumblebee', os.path.abspath('icon.png'),
+            AppIndicator.IndicatorCategory.APPLICATION_STATUS)
+        self.icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
+
+        self.display_icon()
+
+        menu = Gtk.Menu()
+        item = Gtk.MenuItem(label=_("NVIDIA Settings"))
+        item.connect("activate", self.run_nvidia_settings)
+        menu.append(item)
+
+        menu.append(item)
+        menu.show_all()
+        self.icon.set_menu(menu)
+
+    def display_icon(self):
+
+        threading.Timer(2.0, self.display_icon).start()
+        status = commands.getoutput("optirun --status | grep -c off")
+        if (status == "0"):
+            text = commands.getoutput(
+                "optirun --status | grep -oE \"[0-9] applications.*\"")
+            self.icon.set_from_file(os.path.abspath('active.svg'))
+            self.icon.set_tooltip_text(_(text))
+        elif (status == "1"):
+            text = commands.getoutput(
+                "optirun --status | grep -oE \"Discrete.*\"")
+            self.icon.set_from_file(os.path.abspath('inactive.svg'))
+            self.icon.set_tooltip_text(_(text))
+        else:
+            self.icon.set_from_icon_name("dialog-error")
+            self.icon.set_tooltip_text(
+                _("Active graphics card: " + status))
+
+    def run_nvidia_settings(self, arg=None):
+        subprocess.Popen(["nvidia-settings", "-page", "NVIDIA Profiles"])
+
+    def terminate(self, window=None, data=None):
+        Gtk.main_quit()
+
+
+if __name__ == "__main__":
+
+    # If nvidia-bumblebee isn't installed or isn't supported, exit cleanly
+    if not (os.path.exists("/usr/bin/nvidia-settings") and os.path.exists("/usr/bin/optirun")):
+        sys.exit(0)
+
+    if os.getenv("XDG_CURRENT_DESKTOP") == "KDE":
+        gi.require_version('AppIndicator3', '0.1')
+        from gi.repository import AppIndicator3 as AppIndicator
+        Indicator()
+    else:
+        Tray()
+    Gtk.main()

@@ -1,0 +1,10 @@
+[Desktop Entry]
+
+Name=Support for NVIDIA Bumblebee
+Comment=Shows a tray icon when a compatible NVIDIA Optimus graphics card is detected
+Exec=/usr/lib/nvidia-bumblebee-applet/nvidia-bumblebee
+Icon=bumblebee-tray-nvidia
+Terminal=false
+Type=Application
+Categories=GTK;GNOME;Settings;
+StartupNotify=false
