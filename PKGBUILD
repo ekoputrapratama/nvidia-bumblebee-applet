@@ -1,0 +1,11 @@
+pkgname=nvidia-bumblebee-applet
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Applets for NVIDIA Bumblebee"
+arch=('any')
+url="https://github.com/muhammadsayuti/nvidia-bumblebee-applet"
+license=('GPLv2')
+depends=('python2' 'python2-gobject','python2-libappindicator')
+install=theme.install
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/muhammadsayuti/${pkgname}/archive/${pkgver}.tar.gz")
+md5sums=('fd3885f57962eb3a6760b60fab87ed5d')
