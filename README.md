@@ -1,4 +1,4 @@
-#nvidia-bumblebee-applet
+# nvidia-bumblebee-applet
 
 Applets for NVIDIA Bumblebee
 

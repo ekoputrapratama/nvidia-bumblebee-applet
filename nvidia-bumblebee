@@ -111,7 +111,8 @@ class Indicator:
                 _("Active graphics card: " + status))
 
     def run_nvidia_settings(self, arg=None):
-        subprocess.Popen(["nvidia-settings", "-page", "NVIDIA Profiles"])
+        subprocess.Popen(
+            ["optirun", "-b", "none", "nvidia-settings", "-c", ":8"])
 
     def terminate(self, window=None, data=None):
         Gtk.main_quit()
