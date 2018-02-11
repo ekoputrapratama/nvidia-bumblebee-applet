@@ -30,12 +30,12 @@ class Tray:
         if (status == "0"):
             text = commands.getoutput(
                 "optirun --status | grep -oE \"[0-9] applications.*\"")
-            self.icon.set_from_file(os.path.abspath('active.svg'))
+            self.icon.set_from_icon_name('nvidia-bumblebee-active')
             self.icon.set_tooltip_text(_(text))
         elif (status == "1"):
             text = commands.getoutput(
                 "optirun --status | grep -oE \"Discrete.*\"")
-            self.icon.set_from_file(os.path.abspath('inactive.svg'))
+            self.icon.set_from_icon_name('nvidia-bumblebee-inactive')
             self.icon.set_tooltip_text(_(text))
         else:
             self.icon.set_from_icon_name("dialog-error")
@@ -76,7 +76,7 @@ class Indicator:
     def __init__(self):
         # self.running = true
         self.icon = AppIndicator.Indicator.new(
-            'nvidia-bumblebee', os.path.abspath('icon.png'),
+            'nvidia-bumblebee', 'nvidia-bumblebee',
             AppIndicator.IndicatorCategory.APPLICATION_STATUS)
         self.icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 
@@ -98,12 +98,12 @@ class Indicator:
         if (status == "0"):
             text = commands.getoutput(
                 "optirun --status | grep -oE \"[0-9] applications.*\"")
-            self.icon.set_from_file(os.path.abspath('active.svg'))
+            self.icon.set_from_icon_name('nvidia-bumblebee-active')
             self.icon.set_tooltip_text(_(text))
         elif (status == "1"):
             text = commands.getoutput(
                 "optirun --status | grep -oE \"Discrete.*\"")
-            self.icon.set_from_file(os.path.abspath('inactive.svg'))
+            self.icon.set_from_icon_name('nvidia-bumblebee-inactive')
             self.icon.set_tooltip_text(_(text))
         else:
             self.icon.set_from_icon_name("dialog-error")
