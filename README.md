@@ -5,7 +5,7 @@ Applets for NVIDIA Bumblebee
 A port of official Linux Mint [nvidia-prime-applet](https://github.com/linuxmint/nvidia-prime-applet.git)
 
 ## Installation
-For archlinux user, you can get it from [AUR]().
+For archlinux user, you can get it from [AUR](https://aur.archlinux.org/packages/nvidia-bumblebee-applet/).
 
 For other distro make sure you've installed all required dependencies
 - python2 
