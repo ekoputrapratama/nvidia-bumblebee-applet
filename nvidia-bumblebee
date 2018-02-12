@@ -9,7 +9,15 @@ import threading
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
+import signal
+import time
 
+
+def signal_handler(signal, frame):
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, signal_handler)
 # i18n
 gettext.install("nvidia-bumblebee-applet", "/usr/share/locale")
 
@@ -25,22 +33,23 @@ class Tray:
         self.display_icon()
 
     def display_icon(self):
-        threading.Timer(2.0, self.display_icon).start()
+        time.sleep(1)
         status = commands.getoutput("optirun --status | grep -c off")
         if (status == "0"):
             text = commands.getoutput(
                 "optirun --status | grep -oE \"[0-9] applications.*\"")
             self.icon.set_from_icon_name('nvidia-bumblebee-active')
-            self.icon.set_tooltip_text(_(text))
+            self.icon.set_tooltip_text(text)
         elif (status == "1"):
             text = commands.getoutput(
                 "optirun --status | grep -oE \"Discrete.*\"")
             self.icon.set_from_icon_name('nvidia-bumblebee-inactive')
-            self.icon.set_tooltip_text(_(text))
+            self.icon.set_tooltip_text(text)
         else:
             self.icon.set_from_icon_name("dialog-error")
             self.icon.set_tooltip_text(
                 _("Active graphics card: " + status))
+        threading.Timer(2.0, self.display_icon).start()
 
     def on_activate(self, icon, data=None):
         self.run_nvidia_settings()
@@ -62,6 +71,10 @@ class Tray:
         item.connect("activate", self.run_nvidia_settings)
         menu.append(item)
 
+        item = Gtk.MenuItem(label=_("Quit"))
+        item.connect("activate", self.terminate)
+        menu.append(item)
+
         menu.show_all()
 
         device = Gdk.Display.get_default().get_device_manager().get_client_pointer()
@@ -70,6 +83,7 @@ class Tray:
 
     def terminate(self, window=None, data=None):
         Gtk.main_quit()
+        sys.exit(0)
 
 
 class Indicator:
@@ -87,13 +101,15 @@ class Indicator:
         item.connect("activate", self.run_nvidia_settings)
         menu.append(item)
 
+        item = Gtk.MenuItem(label=_("Quit"))
+        item.connect("activate", self.terminate)
+        menu.append(item)
+
         menu.append(item)
         menu.show_all()
         self.icon.set_menu(menu)
 
     def display_icon(self):
-
-        threading.Timer(2.0, self.display_icon).start()
         status = commands.getoutput("optirun --status | grep -c off")
         if (status == "0"):
             text = commands.getoutput(
@@ -109,6 +125,7 @@ class Indicator:
             self.icon.set_from_icon_name("dialog-error")
             self.icon.set_tooltip_text(
                 _("Active graphics card: " + status))
+        threading.Timer(2.0, self.display_icon).start()
 
     def run_nvidia_settings(self, arg=None):
         subprocess.Popen(
@@ -116,6 +133,7 @@ class Indicator:
 
     def terminate(self, window=None, data=None):
         Gtk.main_quit()
+        sys.exit(0)
 
 
 if __name__ == "__main__":
