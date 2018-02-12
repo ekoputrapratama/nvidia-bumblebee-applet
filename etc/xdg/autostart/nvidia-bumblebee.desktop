@@ -2,7 +2,7 @@
 
 Name=Support for NVIDIA Bumblebee
 Comment=Shows a tray icon when a compatible NVIDIA Optimus graphics card is detected
-Exec=/usr/lib/nvidia-bumblebee-applet/nvidia-bumblebee
+Exec=/usr/bin/nvidia-bumblebee
 Icon=nvidia-bumblebee
 Terminal=false
 Type=Application

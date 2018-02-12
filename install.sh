@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 pkgname=nvidia-bumblebee-applet
 srcdir=$(pwd)
 cd /usr/lib
@@ -21,3 +23,5 @@ rm -rf icons
 
 cp -dpr --no-preserve=ownership ./etc/xdg/autostart/nvidia-bumblebee.desktop /etc/xdg/autostart/nvidia-bumblebee.desktop
 rm -rf etc
+
+ln -sf /usr/lib/${pkgname}/nvidia-bumblebee /usr/bin/nvidia-bumblebee
