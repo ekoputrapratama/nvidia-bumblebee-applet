@@ -90,9 +90,21 @@ public class Main {
       }
       return true;
     }
+    private bool is_support_nvidia_bumblebee(){
+      var optirun = File.new_for_path ("/usr/bin/optirun");
+      var settings = File.new_for_path ("/usr/bin/nvidia-settings");
+      return optirun.query_exists() && settings.query_exists();
+    }
   }
-
+  private static bool is_support_nvidia_bumblebee(){
+    var optirun = File.new_for_path ("/usr/bin/optirun");
+    var settings = File.new_for_path ("/usr/bin/nvidia-settings");
+    return optirun.query_exists() && settings.query_exists();
+  }
   public static int main (string[] args) {
+    if(!Main.is_support_nvidia_bumblebee()){
+      Process.exit(0);
+    }
     Gtk.init(ref args);
     var App = new AppStatusIcon();
     Gtk.main();
