@@ -23,7 +23,7 @@ cd nvidia-bumblebee-applet
 
 install it
 ```bash
-./install.sh
+sudo ./install.sh
 ```
 
 Logout and then login back.
