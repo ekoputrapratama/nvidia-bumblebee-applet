@@ -8,9 +8,8 @@ A port of official Linux Mint [nvidia-prime-applet](https://github.com/linuxmint
 For archlinux user, you can get it from [AUR](https://aur.archlinux.org/packages/nvidia-bumblebee-applet/).
 
 For other distro make sure you've installed all required dependencies
-- python2 
-- python2-gobject 
-- python2-libappindicator
+- gtk+-3.0
+- glib-2.0
 
 clone this repo
 ```bash
