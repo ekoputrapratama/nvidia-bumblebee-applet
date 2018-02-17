@@ -1,7 +1,7 @@
 using GLib;
 using Gtk;
 
-public class Main {
+namespace NVIDIABumblebee {
   class AppStatusIcon : GLib.Object {
     private StatusIcon trayicon;
     private Gtk.Menu menuSystem;
@@ -43,7 +43,7 @@ public class Main {
     }
 
     private void open_nvidia_settings() {
-      
+
       Process.spawn_command_line_sync ("optirun -b none nvidia-settings -c :8",
                       null,
                       null,
@@ -58,7 +58,7 @@ public class Main {
                       out status,
                       out ls_stderr,
                       out ls_status);
-        
+
         if(status.contains("off") || status.contains("on") && status.contains("Ready")){
           string text;
           Process.spawn_command_line_sync("optirun --status | grep -c off",
@@ -90,11 +90,6 @@ public class Main {
       }
       return true;
     }
-    private bool is_support_nvidia_bumblebee(){
-      var optirun = File.new_for_path ("/usr/bin/optirun");
-      var settings = File.new_for_path ("/usr/bin/nvidia-settings");
-      return optirun.query_exists() && settings.query_exists();
-    }
   }
   private static bool is_support_nvidia_bumblebee(){
     var optirun = File.new_for_path ("/usr/bin/optirun");
@@ -102,7 +97,7 @@ public class Main {
     return optirun.query_exists() && settings.query_exists();
   }
   public static int main (string[] args) {
-    if(!Main.is_support_nvidia_bumblebee()){
+    if(!NVIDIABumblebee.is_support_nvidia_bumblebee()){
       Process.exit(0);
     }
     Gtk.init(ref args);
